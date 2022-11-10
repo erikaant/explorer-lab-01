@@ -1,27 +1,15 @@
 import "./css/index.css"
 import IMask from "imask"
 
-const ccBgColor01 = document.querySelector(".cc-bg svg > g g:nth-child(1) path");
-const ccBgColor02 = document.querySelector(".cc-bg svg > g g:nth-child(2) path");
 const ccLogo = document.querySelector(".cc-logo span:nth-child(2) img");
-
-console.log(ccLogo);
+const ccBgColor = document.querySelector(".cc-bg");
 
 function setCardType(type) {
-    const colors = {
-        "visa": ["#436D99", "#2D57F2"],
-        "mastercard": ["#DF6F29", "C69347"],
-        "default": ["black", "gray"]
-    };
-
-    ccBgColor01.setAttribute("fill", colors[type][0]);
-    ccBgColor02.setAttribute("fill", colors[type][1]);
     ccLogo.setAttribute("src", `cc-${type}.svg`);
-
+    ccBgColor.style.setProperty("background-image", `url(cc-bg-${type}.svg)`);
 }
 
 setCardType("default");
-//globalThis.setCardType = setCardType;
 
 const securityCode = document.querySelector("#security-code");
 const securityCodePattern = {
@@ -64,9 +52,19 @@ const cardNumberPattern = {
             cardtype: "mastercard",
         },
         {
+            mask: '0000 000000 00000',
+            regex: /^3[47]\d{0,13}/,
+            cardtype: "amex",
+        },
+        {
+            mask: '0000 000000 0000',
+            regex: /^3(?:0([0-5]|9)|[689]\d?)\d{0,11}/,
+            cardtype: 'diners',
+        },
+        {
             mask: "0000 0000 0000 0000",
             cardtype: "default",
-        }
+        },
     ],
     dispatch: function(appended, dynamicMasked) {
         const number = (dynamicMasked.value + appended).replace(/\D/g,"");
@@ -116,6 +114,12 @@ document.querySelector("form").addEventListener("submit", (event => {
 }));
 
 const cardHolder = document.querySelector("#card-holder")
+// const cardHolderPattern = {
+//     mask: /\w+/,
+// }
+// const cardHolderMasked = IMask(cardHolder, cardHolderPattern);
+
+
 cardHolder.addEventListener("input", () => {
     const ccHolder = document.querySelector(".cc-holder .value");
     ccHolder.innerText = cardHolder.value.length === 0 ? "Fulano da Silva" : cardHolder.value;

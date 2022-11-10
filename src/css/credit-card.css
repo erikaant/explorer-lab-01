@@ -65,7 +65,12 @@
 }
 
 .cc-bg {
+  background-image: url("/cc-bg-default.svg");
+  border-radius: 5%;
   position: absolute;
   inset: 0;
   z-index: 0;
+  mix-blend-mode: color;
+  transition: transform 1.5s;
+  transition-property: background-image;
 }
